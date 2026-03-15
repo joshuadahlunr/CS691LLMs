@@ -1,0 +1,27 @@
+[project]
+name = "qwen-env"
+version = "0.1.0"
+requires-python = "==3.12.12"
+
+dependencies = [
+    "usearch",
+    "sentence-transformers",
+    "nltk",
+    "bitsandbytes",
+    "torch==2.8.0",
+    "xformers==0.0.32.post2",
+    "triton>=3.3.0",
+    "transformers==5.2.0",
+    "flash-linear-attention",
+    "causal_conv1d==1.6.0",
+    "unsloth_zoo[base] @ git+https://github.com/unslothai/unsloth-zoo",
+    "unsloth[base] @ git+https://github.com/unslothai/unsloth",
+]
+
+[tool.uv]
+# Optional but helpful for reproducibility
+resolution = "highest"
+
+# [[tool.uv.index]]
+# name = "pytorch-cu130"
+# url = "https://download.pytorch.org/whl/cu130"
