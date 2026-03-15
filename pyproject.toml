@@ -1,0 +1,19 @@
+[project]
+name = "base-env"
+version = "0.1.0"
+requires-python = "==3.12.12"
+
+dependencies = [
+    "usearch",
+    "sentence-transformers",
+    "nltk",
+    "ollama"
+]
+
+[tool.uv]
+# Optional but helpful for reproducibility
+resolution = "highest"
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"

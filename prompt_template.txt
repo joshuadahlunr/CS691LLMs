@@ -1,0 +1,9 @@
+Input: {input}
+
+Conversation History:
+{history}
+
+World Context:
+{context}
+
+Response: {response}
