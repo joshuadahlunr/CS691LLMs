@@ -6,7 +6,7 @@ from usearch.index import Index
 import nltk
 import numpy as np
 
-nltk.download('punkt')
+nltk.download('punkt_tab')
 
 # --- Validate CLI arguments ---
 if len(sys.argv) != 3:

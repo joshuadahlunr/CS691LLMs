@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag to Sort</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f0f2f5;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: 1.2rem;
+      color: #555;
+      font-weight: 500;
+    }
+
+    #list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 280px;
+    }
+
+    .item {
+      background: #fff;
+      border: 2px solid #dde1e7;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #222;
+      cursor: grab;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: box-shadow 0.15s, border-color 0.15s, opacity 0.15s;
+    }
+
+    .item::before {
+      content: '⠿';
+      font-size: 1.2rem;
+      color: #bbb;
+    }
+
+    .item:active { cursor: grabbing; }
+
+    .item.dragging {
+      opacity: 0.4;
+      border-color: #aab;
+    }
+
+    .item.over {
+      border-color: #6c8ef5;
+      box-shadow: 0 0 0 3px rgba(108, 142, 245, 0.25);
+    }
+
+    #order-display {
+      margin-top: 28px;
+      width: 280px;
+      background: #fff;
+      border: 2px solid #dde1e7;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      color: #555;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    #order-display span {
+      font-weight: 700;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+  <h1>Drag to sort into the order you think performed best (top is best, bottom is worst)</h1>
+  <div id="list">
+    <div class="item" draggable="true">Model 0</div>
+    <div class="item" draggable="true">Model 1</div>
+    <div class="item" draggable="true">Model 2</div>
+    <div class="item" draggable="true">Model 3</div>
+  </div>
+
+  <div id="order-display"></div>
+
+  <script>
+    const list = document.getElementById('list');
+    const orderDisplay = document.getElementById('order-display');
+    let dragged = null;
+
+    function updateOrder() {
+      const items = [...list.querySelectorAll('.item')].map(el => el.textContent.trim());
+      orderDisplay.innerHTML = items.map((name, i) => {
+        return `<span>${name}</span>${i < items.length - 1 ? ' > ' : ''}`;
+      }).join('');
+    }
+
+    updateOrder();
+
+    list.addEventListener('dragstart', e => {
+      dragged = e.target;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    list.addEventListener('dragend', e => {
+      e.target.classList.remove('dragging');
+      document.querySelectorAll('.item').forEach(el => el.classList.remove('over'));
+      dragged = null;
+      updateOrder();
+    });
+
+    list.addEventListener('dragover', e => {
+      e.preventDefault();
+      const target = e.target.closest('.item');
+      if (!target || target === dragged) return;
+      document.querySelectorAll('.item').forEach(el => el.classList.remove('over'));
+      target.classList.add('over');
+
+      const rect = target.getBoundingClientRect();
+      const after = e.clientY > rect.top + rect.height / 2;
+      list.insertBefore(dragged, after ? target.nextSibling : target);
+    });
+
+    list.addEventListener('dragleave', e => {
+      if (!e.target.closest('.item')) {
+        document.querySelectorAll('.item').forEach(el => el.classList.remove('over'));
+      }
+    });
+
+    list.addEventListener('drop', e => e.preventDefault());
+  </script>
+</body>
+</html>

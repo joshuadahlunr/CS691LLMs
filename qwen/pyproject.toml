@@ -13,7 +13,6 @@ dependencies = [
     "triton>=3.3.0",
     "transformers==5.2.0",
     "flash-linear-attention",
-    "causal_conv1d==1.6.0",
     "unsloth_zoo[base] @ git+https://github.com/unslothai/unsloth-zoo",
     "unsloth[base] @ git+https://github.com/unslothai/unsloth",
 ]

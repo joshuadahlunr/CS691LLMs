@@ -7,15 +7,20 @@ dependencies = [
     "usearch",
     "sentence-transformers",
     "nltk",
-    "unsloth",
-    "datasets==4.3.0",
-    "huggingface_hub>=0.34.0"
+    "bitsandbytes",
+    "torch==2.8.0",
+    "xformers==0.0.32.post2",
+    "triton>=3.3.0",
+    "transformers==5.2.0",
+    "flash-linear-attention",
+    "unsloth_zoo[base] @ git+https://github.com/unslothai/unsloth-zoo",
+    "unsloth[base] @ git+https://github.com/unslothai/unsloth",
 ]
 
 [tool.uv]
 # Optional but helpful for reproducibility
 resolution = "highest"
 
-[[tool.uv.index]]
-name = "pytorch-cu130"
-url = "https://download.pytorch.org/whl/cu130"
+#[[tool.uv.index]]
+#name = "pytorch-cu130"
+#url = "https://download.pytorch.org/whl/cu130"

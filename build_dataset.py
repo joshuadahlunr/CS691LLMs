@@ -66,6 +66,7 @@ for i, c in enumerate(conversations):
 for conversation in fixed_conversations:
     for c in sliding_windows(conversation):
         input = c[-1]
+        # print(input)
         input, response = [x.strip("\n\t\" ") for x in input.split("->")]
         if len(c) > 1:
             history_items = c[0:-1]

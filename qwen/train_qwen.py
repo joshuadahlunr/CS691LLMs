@@ -1,18 +1,18 @@
-from unsloth import FastVisionModel
+from unsloth import FastLanguageModel
 import torch
 
-model, tokenizer = FastVisionModel.from_pretrained(
-    "unsloth/Qwen3.5-9B",
+model, tokenizer = FastLanguageModel.from_pretrained(
+    "unsloth/Qwen2.5-14B-Instruct",
     load_in_4bit = False, # Use 4bit to reduce memory use. False for 16bit LoRA.
     use_gradient_checkpointing = "unsloth", # True or "unsloth" for long context
 )
 
-model = FastVisionModel.get_peft_model(
+model = FastLanguageModel.get_peft_model(
     model,
-    finetune_vision_layers     = False, # False if not finetuning vision layers
-    finetune_language_layers   = True, # False if not finetuning language layers
-    finetune_attention_modules = True, # False if not finetuning attention layers
-    finetune_mlp_modules       = True, # False if not finetuning MLP layers
+    # finetune_vision_layers     = False, # False if not finetuning vision layers
+    # finetune_language_layers   = True, # False if not finetuning language layers
+    # finetune_attention_modules = True, # False if not finetuning attention layers
+    # finetune_mlp_modules       = True, # False if not finetuning MLP layers
 
     r = 16,           # The larger, the higher the accuracy, but might overfit
     lora_alpha = 16,  # Recommended alpha == r at least
@@ -47,7 +47,7 @@ def parse_entry(entry):
     #     {"role": "user", "content": user_turn},
     #     {"role": "assistant", "content": response}
     # ]}
-    return {"text": entry}
+    return {"text": "<|im_start|>" + entry + "<|im_end|>"}
 
 parsed = [parse_entry(e) for e in raw]
 dataset = Dataset.from_list(parsed)
@@ -65,32 +65,31 @@ dataset = standardize_data_formats(dataset)
 print(dataset[100])
 
 from trl import SFTTrainer, SFTConfig
-from unsloth.trainer import UnslothVisionDataCollator
+from transformers import TrainingArguments
+from unsloth import is_bfloat16_supported
 trainer = SFTTrainer(
     model = model,
     tokenizer = tokenizer,
-    # data_collator = UnslothVisionDataCollator(model, tokenizer), # Must use!
     train_dataset = dataset,
-    args = SFTConfig(
+    dataset_text_field = "text",
+    # max_seq_length = max_seq_length,
+    dataset_num_proc = 2,
+    aargs = TrainingArguments(
         per_device_train_batch_size = 2,
         gradient_accumulation_steps = 4,
         warmup_steps = 5,
-        # max_steps = 30,
-        num_train_epochs = 3, # Set this instead of max_steps for full training runs
+        num_train_epochs = 3, # Set this for 1 full training run.
+        # max_steps = 60,
         learning_rate = 2e-4,
+        fp16 = not is_bfloat16_supported(),
+        bf16 = is_bfloat16_supported(),
         logging_steps = 1,
         optim = "adamw_8bit",
-        weight_decay = 0.001,
+        weight_decay = 0.01,
         lr_scheduler_type = "linear",
         seed = 3407,
         # output_dir = "outputs",
-        report_to = "none",     # For Weights and Biases
-
-        # You MUST put the below items for vision finetuning:
-        remove_unused_columns = True,
-        dataset_text_field = "text",
-        # dataset_kwargs = {"skip_prepare_dataset": True},
-        max_length = 2048,
+        # report_to = "none", # Use this for WandB etc
     ),
 )
 
