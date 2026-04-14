@@ -6,6 +6,8 @@ Multi-LLM Chat with Ollama
 - Chat log is saved automatically on exit or after the last model
 """
 
+# Modified from: https://claude.ai/share/c2ac0aa3-1a0f-49ae-97c3-b33a726644fe
+
 import json
 import hashlib
 import itertools
