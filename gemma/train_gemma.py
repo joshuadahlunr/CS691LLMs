@@ -1,5 +1,11 @@
 from unsloth import FastModel
 import torch
+import random
+
+# Set torch to start at a specific seed
+torch.manual_seed(123)
+torch.cuda.manual_seed(123)
+random.seed(123)
 
 model, tokenizer = FastModel.from_pretrained(
     # model_name = "unsloth/gemma-3-4b-it",
