@@ -1,5 +1,11 @@
 from unsloth import FastLanguageModel
 import torch
+import random
+
+# Set torch to start at a specific seed
+torch.manual_seed(123)
+torch.cuda.manual_seed(123)
+random.seed(123)
 
 model, tokenizer = FastLanguageModel.from_pretrained(
     "unsloth/Qwen2.5-14B-Instruct",

@@ -8,6 +8,8 @@ Multi-LLM Chat with Ollama
 
 # Modified from: https://claude.ai/share/c2ac0aa3-1a0f-49ae-97c3-b33a726644fe
 
+# On a scale of 1 to 10, how well do these responses (the part after the ->) retain the character of Holo the wise wolf?
+
 import json
 import hashlib
 import itertools
